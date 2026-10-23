@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use App\Models\Book;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $user_zero = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
-            'password' => 'password' // hashed automatically by the 'hashed' cast on User
+            'password' => 'password', // hashed automatically by the 'hashed' cast on User
         ]);
 
         $user = User::factory()->create([

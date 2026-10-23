@@ -8,7 +8,6 @@ use Illuminate\Auth\Access\Response;
 
 class BookPolicy
 {
-
     /**
      * Determine whether the user can view the model.
      */
