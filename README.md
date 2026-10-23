@@ -6,6 +6,29 @@ A JSON REST API in Laravel where users log in with a password, receive a token, 
 - **Auth:** Bearer tokens (Sanctum personal access tokens)
 - **Tests:** 43 PHPUnit tests (feature + unit), all against an in-memory SQLite database
 
+## Assumptions
+
+- No registration: users are seeded (register is a small extension).
+- Only name is required; isbn and value are optional.
+- ISBN: 10 or 13 digits, no hyphens or X; stored as string; unique per user.
+- Value: >= 0, max 2 decimals, DECIMAL(10,2), returned as string.
+- Another user's book returns 404 to avoid revealing which IDs exist.
+
+## Key decisions
+- Sanctum personal access tokens: hashed at rest, per-device logout.
+- Form Requests (validation), Policy (ownership), API Resources (output contract).
+- Books always created via $user->books(): user_id never comes from input.
+- DB unique index (user_id, isbn) backs the validation rule.
+- Versioned routes (/api/v1), paginated lists, login throttled (5/min).
+
+## Growing this into a larger application
+- Business logic moves to Action classes once create/update do more than save.
+- Add token expiry + scheduled pruning; roles via policies or spatie/laravel-permission.
+- Search/filtering with indexes; full-text or Scout when data grows.
+- Cache per-user lists, queue slow work, Redis for cache/rate limits.
+- Stateless tokens allow horizontal scaling behind a load balancer.
+- OpenAPI docs and CI (tests + Pint) on every push.
+
 ---
 
 ## 1. Setup
@@ -16,6 +39,13 @@ cd book-registry-api
 composer install
 cp .env.example .env
 php artisan key:generate
+touch database/database.sqlite
+php artisan migrate --seed
+php artisan serve
+
+Demo login: demo@example.com / password
+Run tests: php artisan test
+MySQL: set DB_CONNECTION=mysql and DB_* in .env, then migrate.
 ```
 ### Database
 
