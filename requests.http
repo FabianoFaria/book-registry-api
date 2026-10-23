@@ -1,0 +1,17 @@
+# 1. login
+curl -s -X POST http://127.0.0.1:8000/api/v1/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@example.com","password":"password"}'
+
+# 2. copy the token, then
+TOKEN="1|xxxxxxxx"
+curl -s http://127.0.0.1:8000/api/v1/books -H "Authorization: Bearer $TOKEN"
+
+curl -s -X POST http://127.0.0.1:8000/api/v1/books \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"Clean Code","isbn":"9780132350884","value":"32.50"}'
+
+# 3. break it on purpose: expect 422
+curl -s -X POST http://127.0.0.1:8000/api/v1/books \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"isbn":"978-0132","value":"abc"}'

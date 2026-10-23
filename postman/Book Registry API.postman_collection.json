@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "4b833e2f-da20-4b90-bbfb-d661f185cedd",
+    "name": "Book Registry API",
+    "description": "StartFragment\n\nA JSON REST API in Laravel where users log in with a password, receive a token, and manage **only their own** books (create, list, view, update, delete).\n\n- **Stack:** PHP 8.3+, Laravel 13, Laravel Sanctum, SQLite (default) or MySQL\n    \n- **Auth:** Bearer tokens (Sanctum personal access tokens)\n    \n- **Tests:** 43 PHPUnit tests (feature + unit), all against an in-memory SQLite database\n    \n\nEndFragment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20226028"
+  },
+  "item": [
+    {
+      "name": "login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"demo@example.com\",\"password\":\"password\"}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/login",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "List Books",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "1|lHZ5zSnNpQdo0vc4FOtCrhN4fnyiV0AL09urE6dH24949d6c",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer $TOKEN"
+          }
+        ],
+        "url": {
+          "raw": "http://127.0.0.1:8000/api/v1/books",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "books"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "View Book",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "View Book Wrong",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ]
+}
