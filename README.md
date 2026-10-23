@@ -50,6 +50,6 @@ php artisan serve        # http://127.0.0.1:8000
 | Email               | Password   | Books |
 |---------------------|------------|-------|
 | `test@example.com`  | `password` | 3     |
-| `other@example.com` | `password` | 2     |
+| `demo@example.com`  | `password` | 5     |
 
 Use the second user to check that one user can't see the other's books.

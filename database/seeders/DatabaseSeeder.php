@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Book;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,9 +18,19 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        $user_zero = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => 'password' // hashed automatically by the 'hashed' cast on User
         ]);
+
+        $user = User::factory()->create([
+            'name' => 'Demo User',
+            'email' => 'demo@example.com',
+            'password' => 'password', // hashed automatically by the 'hashed' cast on User
+        ]);
+
+        Book::factory()->count(5)->for($user)->create();
+        Book::factory()->count(3)->for($user_zero)->create();
     }
 }
