@@ -53,3 +53,80 @@ php artisan serve        # http://127.0.0.1:8000
 | `demo@example.com`  | `password` | 5     |
 
 Use the second user to check that one user can't see the other's books.
+
+## 2. API reference
+
+Base URL: `/api/v1`. Every response is JSON. Send `Content-Type: application/json` for request bodies. Protected routes need `Authorization: Bearer <token>`.
+
+| Method      | Path            | Auth | Description                    | Success |
+|-------------|-----------------|------|--------------------------------|---------|
+| POST        | `/login`        | –    | Exchange email+password for a token | 200 |
+| POST        | `/logout`       | ✔    | Revoke the token used for this request | 204 |
+| GET         | `/me`           | ✔    | Current user                   | 200 |
+| GET         | `/books`        | ✔    | List my books (paginated)      | 200 |
+| POST        | `/books`        | ✔    | Create a book                  | 201 |
+| GET         | `/books/{id}`   | ✔    | Show one of my books           | 200 |
+| PUT / PATCH | `/books/{id}`   | ✔    | Update one of my books (partial) | 200 |
+| DELETE      | `/books/{id}`   | ✔    | Delete one of my books         | 204 |
+
+### Book fields
+
+| Field   | Type                | Required | Rules |
+|---------|---------------------|----------|-------|
+| `name`  | string              | **yes**  | max 255 chars |
+| `isbn`  | string or `null`    | no       | digits only, exactly 10 or 13 digits; unique **per user** |
+| `value` | number/string or `null` | no   | ≥ 0, max 2 decimal places, ≤ 99,999,999.99 |
+
+### Examples
+
+**Log in**
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","password":"password","device_name":"curl"}'
+```
+
+```json
+{
+  "token": "1|Xyz...",
+  "token_type": "Bearer",
+  "expires_at": "2026-10-30T18:00:00+00:00",
+  "user": { "id": 1, "name": "Test User", "email": "test@example.com" }
+}
+```
+
+**Create a book**
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/books \
+  -H "Authorization: Bearer 1|Xyz..." \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Clean Code","isbn":"9780132350884","value":39.9}'
+```
+
+```json
+{
+  "data": {
+    "id": 6,
+    "name": "Clean Code",
+    "isbn": "9780132350884",
+    "value": "39.90",
+    "created_at": "2026-10-23T18:33:13+00:00",
+    "updated_at": "2026-10-23T18:33:13+00:00"
+  }
+}
+```
+
+**List books:** `GET /api/v1/books?per_page=20&page=2` returns `{ "data": [...], "links": {...}, "meta": {...} }`.
+
+### Error responses
+
+| Status | When | Body |
+|--------|------|------|
+| 401 | Missing, invalid, expired or revoked token | `{"message":"Unauthenticated."}` |
+| 404 | Book doesn't exist **or belongs to someone else** | `{"message":"Not found."}` |
+| 422 | Validation failed, or wrong login credentials | `{"message":"...","errors":{"field":["..."]}}` |
+| 429 | More than 5 login attempts per minute | `{"message":"Too Many Attempts."}` |
+
+---
