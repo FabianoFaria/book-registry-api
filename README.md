@@ -34,7 +34,7 @@ A JSON REST API in Laravel where users log in with a password, receive a token, 
 ## 1. Setup
 
 ```bash
-git clone <repo-url> book-registry-api
+git clone https://github.com/FabianoFaria/book-registry-api
 cd book-registry-api
 composer install
 cp .env.example .env
